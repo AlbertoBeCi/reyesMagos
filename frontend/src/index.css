@@ -1,8 +1,134 @@
 @import "tailwindcss";
 
+:root {
+  --pine: #0f3b2a;
+  --pine-deep: #082519;
+  --pine-soft: #1b5a40;
+  --berry: #b3202a;
+  --berry-dark: #8c1720;
+  --gold: #e3b34b;
+  --gold-soft: #f4dc9b;
+  --snow: #f7f9f8;
+  --ink: #1b2a22;
+  --muted: #5c6e64;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Figtree", system-ui, sans-serif;
+}
+
 @layer base {
   body {
-    background-color: #f5f5f4; /* stone-100 */
-    color: #18181b; /* zinc-900 */
+    font-family: var(--font-body);
+    color: var(--snow);
+    background:
+      radial-gradient(1200px 500px at 50% -10%, var(--pine-soft) 0%, transparent 60%),
+      var(--pine-deep);
+    min-height: 100vh;
+    overflow-x: hidden;
   }
+
+  :focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+  }
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Nieve decorativa */
+.snow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.flake {
+  position: absolute;
+  top: -10px;
+  width: var(--s);
+  height: var(--s);
+  background: #fff;
+  border-radius: 50%;
+  opacity: var(--o);
+  animation: fall var(--d) linear var(--delay) infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translate(var(--x), 105vh);
+  }
+}
+
+.star-glow {
+  filter: drop-shadow(0 0 18px rgba(227, 179, 75, 0.75));
+  animation: twinkle 4s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  50% {
+    transform: scale(1.07) rotate(4deg);
+    filter: drop-shadow(0 0 28px rgba(227, 179, 75, 0.95));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flake {
+    animation: none;
+    top: var(--y);
+  }
+  .star-glow {
+    animation: none !important;
+  }
+}
+
+/* Tarjeta estilo papel de regalo con lazo */
+.gift-card {
+  position: relative;
+  background: var(--snow);
+  color: var(--ink);
+  border-radius: 6px 22px 6px 22px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.gift-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1.15rem;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--berry) 0 14px,
+    var(--berry-dark) 14px 16px
+  );
+  z-index: 1;
+}
+
+.gift-card::after {
+  content: "";
+  position: absolute;
+  left: 1.15rem;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--gold);
+  z-index: 1;
+}
+
+.btn-berry {
+  background: var(--berry);
+  color: #fff;
+  box-shadow: 0 3px 0 var(--berry-dark);
+}
+.btn-berry:hover:not(:disabled) {
+  background: #c4262f;
+}
+.btn-berry:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--berry-dark);
 }

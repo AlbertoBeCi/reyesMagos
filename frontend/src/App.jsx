@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { LogOut, RefreshCw, Sparkles } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { LogOut, RefreshCw } from 'lucide-react';
 import {
   authMember,
   clearToken,
@@ -12,6 +12,16 @@ import {
 } from './api';
 import BoardColumn from './components/BoardColumn';
 import PinLogin from './components/PinLogin';
+import SnowBackground from './components/SnowBackground';
+
+function getDaysUntilReyes() {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const year = now.getFullYear();
+  let target = new Date(year, 0, 6);
+  if (now > target) target = new Date(year + 1, 0, 6);
+  return Math.round((target - now) / 86400000);
+}
 
 export default function App() {
   const [token, setTokenState] = useState(() => getToken());
@@ -22,6 +32,8 @@ export default function App() {
   const [board, setBoard] = useState(null);
   const [boardLoading, setBoardLoading] = useState(Boolean(getToken()));
   const [boardError, setBoardError] = useState('');
+
+  const daysUntilReyes = useMemo(() => getDaysUntilReyes(), []);
 
   const loadMembers = useCallback(async () => {
     setMembersLoading(true);
@@ -116,30 +128,56 @@ export default function App() {
     : [];
 
   return (
-    <div className="min-h-screen bg-stone-100 flex flex-col">
-      <header className="sticky top-0 z-20 bg-white border-b-2 border-zinc-900 px-4 py-3">
+    <div className="min-h-screen relative flex flex-col">
+      <SnowBackground />
+
+      <header className="relative z-10 px-4 pt-5 pb-3">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-8 h-8 bg-lime-400 border-2 border-zinc-900">
-              <Sparkles className="w-4 h-4" />
-            </span>
+          <div className="flex items-center gap-3">
+            <svg
+              className="w-10 h-10 shrink-0 star-glow"
+              viewBox="0 0 100 100"
+              aria-hidden="true"
+            >
+              <polygon
+                points="50,4 61,37 96,37 68,58 78,92 50,71 22,92 32,58 4,37 39,37"
+                fill="#E3B34B"
+                stroke="#F4DC9B"
+                strokeWidth="2"
+                strokeLinejoin="round"
+              />
+            </svg>
             <div>
-              <h1 className="font-black text-lg leading-none">
+              <h1 className="font-display font-extrabold text-2xl sm:text-3xl text-[#F7F9F8] leading-none">
                 {board?.family?.name || 'Reyes Magos'}
               </h1>
-              <p className="text-[11px] font-semibold text-zinc-500">
+              <p className="text-xs text-[#F4DC9B] mt-1">
                 Tablero familiar · Sin spoilers
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="hidden sm:inline-flex items-baseline gap-1.5 bg-[#B3202A] text-[#F7F9F8] px-3.5 py-1 rounded-full text-xs font-medium shadow-[0_0_0_2px_#E3B34B]"
+              role="status"
+            >
+              <b className="font-display text-base leading-none">{daysUntilReyes}</b>
+              <span>
+                {daysUntilReyes === 0
+                  ? '¡Hoy llegan los Reyes!'
+                  : daysUntilReyes === 1
+                    ? 'día para los Reyes'
+                    : 'días para los Reyes'}
+              </span>
+            </div>
+
             <button
               type="button"
               onClick={loadBoard}
               disabled={boardLoading}
               title="Refrescar tablero"
-              className="p-2 bg-stone-100 hover:bg-lime-400 border-2 border-zinc-900 cursor-pointer"
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-[#F4DC9B] border border-[#E3B34B]/50 cursor-pointer transition-colors"
             >
               <RefreshCw className={`w-4 h-4 ${boardLoading ? 'animate-spin' : ''}`} />
             </button>
@@ -147,7 +185,7 @@ export default function App() {
               type="button"
               onClick={handleLogout}
               title="Cambiar de usuario"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-100 hover:bg-red-100 border-2 border-zinc-900 text-xs font-black uppercase cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#E3B34B] hover:bg-[#F4DC9B] text-[#082519] text-xs font-bold uppercase cursor-pointer shadow-[0_3px_0_#b98d2c] transition-colors"
             >
               <LogOut className="w-3.5 h-3.5" />
               Salir
@@ -156,14 +194,16 @@ export default function App() {
         </div>
 
         {orderedColumns.length > 0 && (
-          <nav className="max-w-7xl mx-auto mt-3 flex items-center gap-2 overflow-x-auto pb-1">
+          <nav className="max-w-7xl mx-auto mt-4 flex items-center gap-2 overflow-x-auto pb-1">
             {orderedColumns.map((col) => (
               <button
                 key={col.member_id}
                 type="button"
                 onClick={() => scrollToColumn(col.member_id)}
-                className={`px-2.5 py-1 border-2 border-zinc-900 text-xs font-bold shrink-0 cursor-pointer ${
-                  col.is_me ? 'bg-lime-400' : 'bg-stone-50 hover:bg-stone-200'
+                className={`px-3 py-1 rounded-full text-xs font-bold shrink-0 cursor-pointer transition-colors border ${
+                  col.is_me
+                    ? 'bg-[#E3B34B] text-[#082519] border-[#F4DC9B]'
+                    : 'bg-white/10 text-[#F7F9F8] border-white/20 hover:bg-white/20'
                 }`}
               >
                 {col.avatar_emoji} {col.is_me ? 'Tú' : col.name}
@@ -173,20 +213,22 @@ export default function App() {
         )}
       </header>
 
-      <main className="flex-1 p-4 overflow-x-auto">
+      <main className="relative z-10 flex-1 px-4 py-3 overflow-x-auto">
         {boardLoading && !board ? (
           <div className="h-64 flex flex-col items-center justify-center text-center">
-            <p className="text-lg font-black animate-pulse">Preparando los camellos...</p>
-            <p className="text-xs text-zinc-500 mt-1">
+            <p className="font-display text-xl font-bold text-[#F4DC9B] animate-pulse">
+              Preparando los camellos...
+            </p>
+            <p className="text-xs text-[#F7F9F8]/70 mt-1">
               Si el servidor estaba dormido, tardará unos segundos en despertar.
             </p>
           </div>
         ) : boardError ? (
-          <div className="max-w-md mx-auto mt-10 p-4 bg-red-100 border-2 border-zinc-900 text-sm font-bold text-red-900">
+          <div className="max-w-md mx-auto mt-10 p-4 bg-[#f0e1e2] border-2 border-[#B3202A] rounded-xl text-sm font-bold text-[#8C1720]">
             {boardError}
           </div>
         ) : (
-          <div className="flex items-start gap-4 snap-x snap-mandatory pb-4">
+          <div className="flex items-start gap-5 snap-x snap-mandatory pb-6">
             {orderedColumns.map((column) => (
               <BoardColumn
                 key={column.member_id}

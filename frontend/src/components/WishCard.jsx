@@ -33,14 +33,14 @@ export default function WishCard({
 
   return (
     <div
-      className={`bg-white border-2 border-zinc-900 shadow-[3px_3px_0px_0px_rgba(24,24,27,1)] p-3 flex flex-col gap-2 ${
-        isPurchasedByOther ? 'opacity-80 bg-stone-50' : ''
+      className={`py-2.5 border-b border-dashed border-[#c9d4ce] last:border-b-0 flex flex-col gap-1.5 ${
+        isPurchasedByOther ? 'opacity-70' : ''
       }`}
     >
       <div className="flex items-start justify-between gap-2">
         <h3
-          className={`font-bold text-sm leading-snug ${
-            !isMe && wish.is_purchased ? 'line-through text-zinc-500' : 'text-zinc-900'
+          className={`font-medium text-sm leading-snug ${
+            !isMe && wish.is_purchased ? 'line-through text-[#5C6E64]' : 'text-[#1B2A22]'
           }`}
         >
           {wish.title}
@@ -52,7 +52,7 @@ export default function WishCard({
             onClick={handleDelete}
             disabled={busy}
             title="Eliminar deseo"
-            className="p-1 text-zinc-500 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-zinc-900 cursor-pointer shrink-0"
+            className="p-1 text-[#5C6E64] hover:text-[#B3202A] hover:bg-[#f0e1e2] rounded-md cursor-pointer shrink-0 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -60,12 +60,12 @@ export default function WishCard({
       </div>
 
       {wish.notes && (
-        <p className="text-xs text-zinc-600 whitespace-pre-line">{wish.notes}</p>
+        <p className="text-xs text-[#5C6E64] whitespace-pre-line">{wish.notes}</p>
       )}
 
       <div className="flex flex-wrap items-center gap-2 text-xs">
         {wish.price_approx && (
-          <span className="px-1.5 py-0.5 bg-stone-100 border border-zinc-900 font-bold">
+          <span className="font-bold text-[#B3202A]">
             ~{wish.price_approx}
           </span>
         )}
@@ -74,7 +74,7 @@ export default function WishCard({
             href={wish.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 font-bold underline decoration-2 hover:text-lime-700"
+            className="inline-flex items-center gap-1 font-semibold text-[#0F3B2A] underline decoration-[#E3B34B] decoration-2 hover:text-[#B3202A]"
           >
             Ver enlace
             <ExternalLink className="w-3 h-3" />
@@ -85,7 +85,7 @@ export default function WishCard({
       {!isMe && (
         <div className="pt-1">
           {isPurchasedByOther ? (
-            <div className="w-full py-1.5 px-2.5 bg-zinc-200 border-2 border-zinc-900 text-xs font-bold text-zinc-700 text-center">
+            <div className="w-full py-1.5 px-2.5 bg-[#e8edea] border border-[#c9d4ce] rounded-lg text-xs font-bold text-[#5C6E64] text-center">
               Cogido ({wish.purchased_by_name})
             </div>
           ) : isPurchasedByMe ? (
@@ -93,9 +93,9 @@ export default function WishCard({
               type="button"
               onClick={handleToggle}
               disabled={busy}
-              className="w-full py-1.5 px-2.5 bg-lime-400 hover:bg-lime-300 border-2 border-zinc-900 text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full py-1.5 px-2.5 bg-[#0F3B2A] hover:bg-[#1B5A40] text-[#F4DC9B] border border-[#0F3B2A] rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
             >
-              <Check className="w-3.5 h-3.5" />
+              <Check className="w-3.5 h-3.5 text-[#E3B34B]" />
               Lo compras tú (Cancelar)
             </button>
           ) : (
@@ -103,7 +103,7 @@ export default function WishCard({
               type="button"
               onClick={handleToggle}
               disabled={busy}
-              className="w-full py-1.5 px-2.5 bg-white hover:bg-lime-400 border-2 border-zinc-900 shadow-[2px_2px_0px_0px_rgba(24,24,27,1)] text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              className="btn-berry w-full py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Gift className="w-3.5 h-3.5" />
               Lo pido yo

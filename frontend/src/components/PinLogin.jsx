@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { KeyRound, Lock, Sparkles } from 'lucide-react';
+import { KeyRound, Lock } from 'lucide-react';
+import SnowBackground from './SnowBackground';
 
 export default function PinLogin({ members, loading, error, onLogin }) {
   const [selectedMember, setSelectedMember] = useState(null);
@@ -33,115 +34,140 @@ export default function PinLogin({ members, loading, error, onLogin }) {
   };
 
   return (
-    <div className="min-h-screen bg-stone-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white border-2 border-zinc-900 shadow-[6px_6px_0px_0px_rgba(24,24,27,1)] p-6">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="inline-flex items-center justify-center w-9 h-9 bg-lime-400 border-2 border-zinc-900">
-            <Sparkles className="w-5 h-5" />
-          </span>
-          <h1 className="text-2xl font-black tracking-tight">Reyes Magos</h1>
+    <div className="min-h-screen relative flex items-center justify-center p-4">
+      <SnowBackground />
+
+      <div className="relative z-10 w-full max-w-md">
+        <div className="text-center mb-6">
+          <svg
+            className="w-16 h-16 mx-auto mb-2 star-glow"
+            viewBox="0 0 100 100"
+            aria-hidden="true"
+          >
+            <polygon
+              points="50,4 61,37 96,37 68,58 78,92 50,71 22,92 32,58 4,37 39,37"
+              fill="#E3B34B"
+              stroke="#F4DC9B"
+              strokeWidth="2"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <h1 className="font-display font-extrabold text-3xl sm:text-4xl text-[#F7F9F8] tracking-tight">
+            Reyes Magos
+          </h1>
+          <p className="text-sm text-[#F4DC9B] mt-1">
+            Elige tu perfil e introduce tu PIN de 4 dígitos para entrar al tablero.
+          </p>
         </div>
-        <p className="text-sm text-zinc-600 mb-6">
-          Elige tu perfil e introduce tu PIN de 4 dígitos para entrar al tablero.
-        </p>
 
-        {loading ? (
-          <div className="py-10 text-center">
-            <p className="font-bold text-zinc-800 animate-pulse">
-              Preparando los camellos...
-            </p>
-            <p className="text-xs text-zinc-500 mt-1">
-              Conectando con el servidor familiar
-            </p>
-          </div>
-        ) : error ? (
-          <div className="p-3 bg-red-100 border-2 border-zinc-900 text-sm font-medium text-red-900">
-            {error}
-          </div>
-        ) : (
-          <>
-            <div className="mb-6">
-              <p className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3">
-                ¿Quién eres?
+        <div className="gift-card p-6 pl-8">
+          {loading ? (
+            <div className="py-10 text-center">
+              <p className="font-bold text-[#0F3B2A] animate-pulse">
+                Preparando los camellos...
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                {members.map((member) => {
-                  const isSelected = selectedMember?.id === member.id;
-                  return (
-                    <button
-                      key={member.id}
-                      type="button"
-                      onClick={() => handleSelectMember(member)}
-                      className={`flex flex-col items-center gap-1 p-3 border-2 border-zinc-900 transition-transform active:translate-y-0.5 cursor-pointer ${
-                        isSelected
-                          ? 'bg-lime-400 shadow-[3px_3px_0px_0px_rgba(24,24,27,1)] -translate-y-0.5'
-                          : 'bg-stone-50 hover:bg-stone-200'
-                      }`}
-                    >
-                      <span className="text-2xl">{member.avatar_emoji}</span>
-                      <span className="font-bold text-sm truncate w-full text-center">
-                        {member.name}
-                      </span>
-                      <span className="text-[10px] font-semibold px-1.5 py-0.5 border border-zinc-900 bg-white">
-                        {member.has_pin ? 'PIN activo' : 'Crear PIN'}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+              <p className="text-xs text-[#5C6E64] mt-1">
+                Conectando con el servidor familiar
+              </p>
             </div>
-
-            {selectedMember && (
-              <form onSubmit={handleSubmit} className="space-y-4 pt-4 border-t-2 border-zinc-900">
-                <div>
-                  <label className="flex items-center gap-1.5 text-sm font-bold mb-1.5">
-                    {selectedMember.has_pin ? (
-                      <>
-                        <Lock className="w-4 h-4" />
-                        Introduce tu PIN ({selectedMember.name})
-                      </>
-                    ) : (
-                      <>
-                        <KeyRound className="w-4 h-4" />
-                        Crea tu PIN de 4 dígitos ({selectedMember.name})
-                      </>
-                    )}
-                  </label>
-                  <input
-                    type="password"
-                    inputMode="numeric"
-                    maxLength={4}
-                    pattern="\d{4}"
-                    autoFocus
-                    value={pin}
-                    onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                    placeholder="••••"
-                    className="w-full px-3 py-2.5 text-center text-2xl tracking-[0.5em] font-black bg-stone-50 border-2 border-zinc-900 focus:outline-none focus:bg-white"
-                  />
-                  {!selectedMember.has_pin && (
-                    <p className="text-xs text-zinc-500 mt-1">
-                      Es tu primera vez: este PIN quedará guardado para tus próximos accesos.
-                    </p>
-                  )}
+          ) : error ? (
+            <div className="p-3 bg-[#f0e1e2] border border-[#B3202A] rounded-lg text-sm font-medium text-[#8C1720]">
+              {error}
+            </div>
+          ) : (
+            <>
+              <div className="mb-5">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#5C6E64] mb-3">
+                  ¿Quién eres?
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  {members.map((member) => {
+                    const isSelected = selectedMember?.id === member.id;
+                    return (
+                      <button
+                        key={member.id}
+                        type="button"
+                        onClick={() => handleSelectMember(member)}
+                        className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#0F3B2A] text-[#F7F9F8] border-[#E3B34B] shadow-md -translate-y-0.5'
+                            : 'bg-white text-[#1B2A22] border-[#c9d4ce] hover:border-[#0F3B2A]'
+                        }`}
+                      >
+                        <span className="text-2xl">{member.avatar_emoji}</span>
+                        <span className="font-bold text-sm truncate w-full text-center">
+                          {member.name}
+                        </span>
+                        <span
+                          className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                            isSelected
+                              ? 'bg-[#E3B34B] text-[#082519]'
+                              : 'bg-[#F7F9F8] text-[#5C6E64] border border-[#c9d4ce]'
+                          }`}
+                        >
+                          {member.has_pin ? 'PIN activo' : 'Crear PIN'}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
+              </div>
 
-                {localError && (
-                  <div className="p-2.5 bg-red-100 border-2 border-zinc-900 text-xs font-bold text-red-900">
-                    {localError}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={submitting || pin.length !== 4}
-                  className="w-full py-2.5 px-4 bg-lime-400 hover:bg-lime-300 disabled:opacity-50 border-2 border-zinc-900 shadow-[3px_3px_0px_0px_rgba(24,24,27,1)] font-black text-sm uppercase tracking-wide cursor-pointer"
+              {selectedMember && (
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-4 pt-4 border-t border-dashed border-[#c9d4ce]"
                 >
-                  {submitting ? 'Entrando...' : 'Entrar al tablero'}
-                </button>
-              </form>
-            )}
-          </>
-        )}
+                  <div>
+                    <label className="flex items-center gap-1.5 text-sm font-bold text-[#0F3B2A] mb-1.5">
+                      {selectedMember.has_pin ? (
+                        <>
+                          <Lock className="w-4 h-4 text-[#B3202A]" />
+                          Introduce tu PIN ({selectedMember.name})
+                        </>
+                      ) : (
+                        <>
+                          <KeyRound className="w-4 h-4 text-[#B3202A]" />
+                          Crea tu PIN de 4 dígitos ({selectedMember.name})
+                        </>
+                      )}
+                    </label>
+                    <input
+                      type="password"
+                      inputMode="numeric"
+                      maxLength={4}
+                      pattern="\d{4}"
+                      autoFocus
+                      value={pin}
+                      onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                      placeholder="••••"
+                      className="w-full px-3 py-2.5 text-center text-2xl tracking-[0.5em] font-bold bg-white text-[#1B2A22] border-2 border-[#c9d4ce] rounded-xl focus:outline-none focus:border-[#0F3B2A]"
+                    />
+                    {!selectedMember.has_pin && (
+                      <p className="text-xs text-[#5C6E64] mt-1">
+                        Es tu primera vez: este PIN quedará guardado para tus próximos accesos.
+                      </p>
+                    )}
+                  </div>
+
+                  {localError && (
+                    <div className="p-2.5 bg-[#f0e1e2] border border-[#B3202A] rounded-lg text-xs font-bold text-[#8C1720]">
+                      {localError}
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={submitting || pin.length !== 4}
+                    className="btn-berry w-full py-2.5 px-4 rounded-xl font-bold text-sm uppercase tracking-wide disabled:opacity-50 cursor-pointer"
+                  >
+                    {submitting ? 'Entrando...' : 'Entrar al tablero'}
+                  </button>
+                </form>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
