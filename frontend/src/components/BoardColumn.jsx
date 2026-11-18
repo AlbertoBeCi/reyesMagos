@@ -4,6 +4,7 @@ import WishCard from './WishCard';
 
 export default function BoardColumn({
   column,
+  displayName,
   currentMemberId,
   onCreateWish,
   onTogglePurchase,
@@ -39,13 +40,13 @@ export default function BoardColumn({
   return (
     <section
       id={`col-${column.member_id}`}
-      className="gift-card w-[85vw] sm:w-80 shrink-0 snap-center flex flex-col max-h-[calc(100vh-14rem)] pl-7 pr-4 py-4"
+      className="gift-card w-full md:w-80 md:shrink-0 flex flex-col md:max-h-[calc(100vh-14rem)] pl-7 pr-4 py-4"
     >
       <header className="pb-2.5 border-b border-dashed border-[#c9d4ce] flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-xl shrink-0">{column.avatar_emoji}</span>
           <h2 className="font-display font-bold text-xl text-[#0F3B2A] truncate">
-            {column.name}
+            {displayName || column.name}
           </h2>
         </div>
 

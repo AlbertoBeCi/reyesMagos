@@ -66,7 +66,7 @@ export default function WishCard({
       <div className="flex flex-wrap items-center gap-2 text-xs">
         {wish.price_approx && (
           <span className="font-bold text-[#B3202A]">
-            ~{wish.price_approx}
+            {wish.price_approx.includes('€') ? wish.price_approx : `${wish.price_approx}€`}
           </span>
         )}
         {wish.url && (

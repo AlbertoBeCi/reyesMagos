@@ -14,6 +14,22 @@ import BoardColumn from './components/BoardColumn';
 import PinLogin from './components/PinLogin';
 import SnowBackground from './components/SnowBackground';
 
+const FONT_SIZES = [
+  { id: 'sm', label: 'A-', px: '14px', title: 'Letra pequeña' },
+  { id: 'md', label: 'A', px: '16px', title: 'Letra normal' },
+  { id: 'lg', label: 'A+', px: '19px', title: 'Letra grande' },
+];
+
+function getDisplayName(memberName, currentMemberName) {
+  if (!currentMemberName || currentMemberName.trim().toLowerCase() !== 'mayte') {
+    return memberName;
+  }
+  const normalized = memberName.trim().toLowerCase();
+  if (normalized === 'papá' || normalized === 'papa') return 'Suegrito';
+  if (normalized === 'mamá' || normalized === 'mama') return 'Suegrita';
+  return memberName;
+}
+
 function getDaysUntilReyes() {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
@@ -32,6 +48,13 @@ export default function App() {
   const [board, setBoard] = useState(null);
   const [boardLoading, setBoardLoading] = useState(Boolean(getToken()));
   const [boardError, setBoardError] = useState('');
+  const [fontSize, setFontSize] = useState(() => localStorage.getItem('reyes_font_size') || 'md');
+
+  useEffect(() => {
+    const selected = FONT_SIZES.find((f) => f.id === fontSize) || FONT_SIZES[1];
+    document.documentElement.style.fontSize = selected.px;
+    localStorage.setItem('reyes_font_size', selected.id);
+  }, [fontSize]);
 
   const daysUntilReyes = useMemo(() => getDaysUntilReyes(), []);
 
@@ -123,6 +146,9 @@ export default function App() {
     );
   }
 
+  const currentColumn = board?.columns?.find((c) => c.is_me);
+  const currentMemberName = currentColumn?.name || '';
+
   const orderedColumns = board
     ? [...board.columns].sort((a, b) => (a.is_me === b.is_me ? 0 : a.is_me ? -1 : 1))
     : [];
@@ -172,6 +198,24 @@ export default function App() {
               </span>
             </div>
 
+            <div className="inline-flex rounded-xl overflow-hidden border border-[#E3B34B]/50 bg-white/10">
+              {FONT_SIZES.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setFontSize(f.id)}
+                  title={f.title}
+                  className={`px-2 py-1.5 text-xs font-bold cursor-pointer transition-colors ${
+                    fontSize === f.id
+                      ? 'bg-[#E3B34B] text-[#082519]'
+                      : 'text-[#F4DC9B] hover:bg-white/20'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
             <button
               type="button"
               onClick={loadBoard}
@@ -206,14 +250,14 @@ export default function App() {
                     : 'bg-white/10 text-[#F7F9F8] border-white/20 hover:bg-white/20'
                 }`}
               >
-                {col.avatar_emoji} {col.is_me ? 'Tú' : col.name}
+                {col.avatar_emoji} {col.is_me ? 'Tú' : getDisplayName(col.name, currentMemberName)}
               </button>
             ))}
           </nav>
         )}
       </header>
 
-      <main className="relative z-10 flex-1 px-4 py-3 overflow-x-auto">
+      <main className="relative z-10 flex-1 px-4 py-3 md:overflow-x-auto">
         {boardLoading && !board ? (
           <div className="h-64 flex flex-col items-center justify-center text-center">
             <p className="font-display text-xl font-bold text-[#F4DC9B] animate-pulse">
@@ -228,11 +272,12 @@ export default function App() {
             {boardError}
           </div>
         ) : (
-          <div className="flex items-start gap-5 snap-x snap-mandatory pb-6">
+          <div className="flex flex-col md:flex-row md:items-start gap-5 pb-6">
             {orderedColumns.map((column) => (
               <BoardColumn
                 key={column.member_id}
                 column={column}
+                displayName={getDisplayName(column.name, currentMemberName)}
                 currentMemberId={board.current_member_id}
                 onCreateWish={handleCreateWish}
                 onTogglePurchase={handleTogglePurchase}
